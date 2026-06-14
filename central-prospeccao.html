@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Central de Prospecção — Pedro Munaretto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDF1EF;
+    --surface:#FFFFFF;
+    --ink:#14181A;
+    --ink-soft:#66726C;
+    --line:#D7DED9;
+    --accent:#2E6F5E;
+    --accent-soft:#DCECE6;
+    --alert:#C5572E;
+    --alert-soft:#F8E3D8;
+    --code-bg:#14181A;
+    --code-text:#EAF1ED;
+    --code-accent:#6FD9B5;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Space Grotesk',sans-serif;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+
+  /* ===== HEADER ===== */
+  header{
+    padding:32px 20px 24px;
+    max-width:880px;
+    margin:0 auto;
+  }
+  .tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    background:var(--accent-soft);
+    padding:4px 10px;
+    border-radius:6px;
+    margin-bottom:14px;
+  }
+  header h1{
+    font-size:clamp(28px,6vw,40px);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  header p{
+    color:var(--ink-soft);
+    max-width:520px;
+    margin-bottom:20px;
+  }
+  .stats{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .stat{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:10px 14px;
+    font-size:13px;
+  }
+  .stat strong{
+    display:block;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:18px;
+    color:var(--accent);
+  }
+
+  /* ===== ROTA / TIMELINE ===== */
+  .route-wrap{
+    max-width:880px;
+    margin:0 auto 40px;
+    padding:0 20px;
+  }
+  .route{
+    display:flex;
+    gap:0;
+    overflow-x:auto;
+    padding:18px 4px 8px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .route::-webkit-scrollbar{height:0;}
+  .route a{
+    flex:0 0 auto;
+    text-decoration:none;
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:130px;
+    position:relative;
+    text-align:center;
+  }
+  .route a:not(:last-child)::after{
+    content:'';
+    position:absolute;
+    top:14px;
+    left:50%;
+    width:100%;
+    height:2px;
+    background:var(--line);
+    z-index:0;
+  }
+  .route .dot{
+    width:30px;height:30px;
+    border-radius:50%;
+    background:var(--surface);
+    border:2px solid var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    font-weight:600;
+    color:var(--accent);
+    z-index:1;
+    margin-bottom:8px;
+    flex-shrink:0;
+  }
+  .route .label{
+    font-size:13px;
+    font-weight:600;
+  }
+  .route .sub{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+
+  /* ===== LAYOUT ===== */
+  main{
+    max-width:880px;
+    margin:0 auto;
+    padding:0 20px 80px;
+  }
+  section{
+    margin-bottom:56px;
+  }
+  .section-head{
+    margin-bottom:20px;
+  }
+  .section-head .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .section-head h2{
+    font-size:clamp(22px,5vw,30px);
+  }
+  .section-head p{
+    color:var(--ink-soft);
+    margin-top:6px;
+    max-width:560px;
+  }
+
+  /* ===== PASSO A PASSO ===== */
+  .steps{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .step{
+    display:flex;
+    gap:16px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 18px;
+  }
+  .step .num{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:20px;
+    color:var(--accent);
+    flex-shrink:0;
+    width:28px;
+  }
+  .step .body strong{
+    display:block;
+    margin-bottom:4px;
+  }
+  .step .body span{
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+
+  /* ===== CARDS DE RESPOSTA ===== */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:16px;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .card .situation{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:16px;
+  }
+  .card .when{
+    font-size:13px;
+    color:var(--ink-soft);
+    line-height:1.4;
+  }
+  .card.alert{
+    border-color:var(--alert);
+  }
+  .card.alert .situation{
+    color:var(--alert);
+  }
+  .card.ok .situation{
+    color:var(--accent);
+  }
+
+  /* ===== SCRIPT / CODE ===== */
+  .script{
+    background:var(--code-bg);
+    color:var(--code-text);
+    border-radius:10px;
+    padding:14px 16px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13.5px;
+    line-height:1.6;
+    position:relative;
+    white-space:pre-wrap;
+  }
+  .script .ph{
+    color:var(--code-accent);
+  }
+  .copy-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    align-self:flex-start;
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--ink);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    padding:6px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:background .15s, border-color .15s;
+  }
+  .copy-btn:hover{
+    border-color:var(--accent);
+    background:var(--accent-soft);
+  }
+  .copy-btn.copied{
+    border-color:var(--accent);
+    background:var(--accent-soft);
+    color:var(--accent);
+  }
+
+  /* ===== FOLLOW-UP TIMELINE ===== */
+  .timeline{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .tl-item{
+    display:grid;
+    grid-template-columns:90px 1fr;
+    gap:18px;
+    padding:20px 0;
+    border-top:1px solid var(--line);
+  }
+  .tl-item:first-child{
+    border-top:none;
+  }
+  .tl-day{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:20px;
+    color:var(--accent);
+  }
+  .tl-day span{
+    display:block;
+    font-family:'Inter',sans-serif;
+    font-weight:500;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+  .tl-content h3{
+    font-size:16px;
+    margin-bottom:6px;
+  }
+  .tl-content > p{
+    color:var(--ink-soft);
+    font-size:14px;
+    margin:0 0 10px;
+  }
+
+  footer{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13px;
+    padding:20px;
+  }
+
+  @media (max-width:520px){
+    .tl-item{grid-template-columns:60px 1fr;}
+    .route a{width:110px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="tag">Playbook de prospecção</span>
+  <h1>Central de Prospecção</h1>
+  <p>Roteiro completo de contato com leads — primeira mensagem, resposta por situação e follow-up. Use esta página como referência rápida durante o atendimento.</p>
+  <div class="stats">
+    <div class="stat"><strong>725</strong>conversas geradas (Pousada das Missões)</div>
+    <div class="stat"><strong>R$ 878</strong>investidos</div>
+    <div class="stat"><strong>R$ 1,21</strong>custo por lead</div>
+  </div>
+</header>
+
+<div class="route-wrap">
+  <nav class="route">
+    <a href="#passo-a-passo">
+      <span class="dot">D0</span>
+      <span class="label">Primeiro contato</span>
+      <span class="sub">Mensagem inicial</span>
+    </a>
+    <a href="#followup">
+      <span class="dot">D3</span>
+      <span class="label">Sem resposta</span>
+      <span class="sub">Engajamento leve</span>
+    </a>
+    <a href="#followup">
+      <span class="dot">D5</span>
+      <span class="label">2ª mensagem</span>
+      <span class="sub">Retomada curta</span>
+    </a>
+    <a href="#followup">
+      <span class="dot">D10</span>
+      <span class="label">Última tentativa</span>
+      <span class="sub">Fechamento de ciclo</span>
+    </a>
+  </nav>
+</div>
+
+<main>
+
+  <!-- PASSO A PASSO -->
+  <section id="passo-a-passo">
+    <div class="section-head">
+      <div class="eyebrow">Antes de mandar a mensagem</div>
+      <h2>Passo a passo do primeiro contato</h2>
+      <p>Trabalhe em lotes de 5–6 leads por dia. Mensagem genérica em massa cai em spam e converte perto de zero.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="num">01</div>
+        <div class="body">
+          <strong>Escolha o lote do dia</strong>
+          <span>Prioriza nichos com dor mais clara: clínicas, pousadas/hotéis, restaurantes com perfil parado.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">02</div>
+        <div class="body">
+          <strong>Audite o perfil (2 min)</strong>
+          <span>Último post, frequência, se tem reels, se a bio tem CTA, se as fotos são profissionais. Isso vira o gancho da mensagem.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">03</div>
+        <div class="body">
+          <strong>Engaje leve antes</strong>
+          <span>Responde um story ou comenta algo específico num post recente. Quebra o frio antes do DM.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">04</div>
+        <div class="body">
+          <strong>Envie o primeiro contato</strong>
+          <span>Script abaixo. Sem preço, sem link — o objetivo é gerar resposta.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="script" style="margin-top:16px;">
+Oi <span class="ph">[nome/negócio]</span>, vi o perfil de vocês aqui — <span class="ph">[ponto específico, ex: "o último post foi há um tempo" / "o conteúdo é bom mas pouco frequente"]</span>. Trabalho com gestão de Instagram pra negócios da região (já gerei 725 conversas no WhatsApp pra uma pousada aqui com menos de R$900 investidos). Posso te mandar um diagnóstico rápido e gratuito do perfil de vocês?
+    </div>
+    <button class="copy-btn" data-copy>📋 Copiar mensagem</button>
+
+    <div class="step" style="margin-top:16px;">
+      <div class="num">05</div>
+      <div class="body">
+        <strong>Registre na planilha</strong>
+        <span>Atualiza: 1º Contato (data de hoje), Status → "Contatado", e o gancho específico usado — você vai precisar dele no follow-up.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESPOSTAS POR SITUAÇÃO -->
+  <section id="respostas">
+    <div class="section-head">
+      <div class="eyebrow">Quando o lead responde</div>
+      <h2>Respostas por situação</h2>
+      <p>Cada resposta abaixo cobre um tipo de retorno. Adapte o nome e o detalhe específico antes de enviar.</p>
+    </div>
+
+    <div class="grid">
+
+      <div class="card ok">
+        <div class="situation">Demonstrou interesse</div>
+        <div class="when">Respondeu "sim", "manda" ou pediu o diagnóstico.</div>
+        <div class="script">
+Perfeito! Vou olhar o perfil de vocês com calma e te mando o diagnóstico em até 48h. Só pra eu entender melhor: hoje quem cuida das redes de vocês? Já investem em anúncio ou seria a primeira vez?
+        </div>
+        <button class="copy-btn" data-copy>📋 Copiar</button>
+      </div>
+
+      <div class="card">
+        <div class="situation">Respondeu por partes / pediu mais detalhes</div>
+        <div class="when">Mostrou curiosidade mas não se comprometeu — perguntou "como funciona" ou similar.</div>
+        <div class="script">
+Faz sentido! Resumindo: faço a gestão completa — conteúdo, estratégia e tráfego pago. Numa pousada aqui na região, gerei 725 conversas no WhatsApp investindo R$878 (R$1,21 por pessoa interessada). Quer que eu monte um diagnóstico rápido do perfil de vocês pra mostrar onde dá pra melhorar?
+        </div>
+        <button class="copy-btn" data-copy>📋 Copiar</button>
+      </div>
+
+      <div class="card">
+        <div class="situation">Perguntou o preço direto</div>
+        <div class="when">Foi direto ao "quanto custa" sem contexto.</div>
+        <div class="script">
+Direto ao ponto, gosto disso. Tenho planos a partir de R$500/mês (posts) até R$1.800/mês (posts + tráfego pago avançado). Mas antes de falar de valor, queria entender o perfil de vocês — me conta rapidamente o que fazem hoje nas redes e já te digo qual plano faz sentido.
+        </div>
+        <button class="copy-btn" data-copy>📋 Copiar</button>
+      </div>
+
+      <div class="card alert">
+        <div class="situation">Achou caro / "vou pensar"</div>
+        <div class="when">Recebeu valor ou diagnóstico e recuou.</div>
+        <div class="script">
+Entendo. Só pra te dar um parâmetro: o investimento em tráfego de uma pousada aqui foi R$878 e trouxe 725 conversas no WhatsApp — R$1,21 por pessoa interessada. Não é gasto, é o custo de trazer cliente novo. Mas sem problema se não for o momento — fico à disposição se quiser revisitar.
+        </div>
+        <button class="copy-btn" data-copy>📋 Copiar</button>
+      </div>
+
+      <div class="card alert">
+        <div class="situation">Sem interesse / recusou</div>
+        <div class="when">Respondeu educadamente que não, por agora.</div>
+        <div class="script">
+Sem problema! Obrigado pela resposta. Se mudar de ideia ou quiser trocar uma ideia no futuro, é só chamar.
+        </div>
+        <button class="copy-btn" data-copy>📋 Copiar</button>
+      </div>
+
+      <div class="card">
+        <div class="situation">Não é o decisor</div>
+        <div class="when">"Vou falar com o sócio/dona e te retorno."</div>
+        <div class="script">
+Combinado! Fica à vontade pra repassar — se fizer sentido pra vocês, posso te mandar um resumo em texto pra facilitar a conversa com quem decide. Quer?
+        </div>
+        <button class="copy-btn" data-copy>📋 Copiar</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOLLOW UP -->
+  <section id="followup">
+    <div class="section-head">
+      <div class="eyebrow">Sem resposta no D0</div>
+      <h2>Processo de follow-up</h2>
+      <p>A maioria não responde no primeiro contato — é normal. O follow-up é onde a conversão acontece.</p>
+    </div>
+
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-day">D+3<span>dias</span></div>
+        <div class="tl-content">
+          <h3>Engajamento leve, sem nova mensagem</h3>
+          <p>Responda um story novo ou comente em um post recente deles. Gera mais um ponto de contato sem repetir a abordagem.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-day">D+5<span>dias</span></div>
+        <div class="tl-content">
+          <h3>Segunda mensagem, mais curta</h3>
+          <p>Retomada direta, sem cobrança.</p>
+          <div class="script">
+Oi <span class="ph">[nome]</span>, só retomando — vi que <span class="ph">[algo novo no perfil, se houver]</span>. Se fizer sentido, te mando o diagnóstico sem compromisso 🙂
+          </div>
+          <button class="copy-btn" data-copy style="margin-top:10px;">📋 Copiar</button>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-day">D+10<span>dias</span></div>
+        <div class="tl-content">
+          <h3>Fechamento de ciclo</h3>
+          <p>Última tentativa — gera resposta por FOMO.</p>
+          <div class="script">
+<span class="ph">[Nome]</span>, vou seguir com outros contatos da região, mas se quiser ainda fica de pé a proposta do diagnóstico gratuito — só avisar.
+          </div>
+          <button class="copy-btn" data-copy style="margin-top:10px;">📋 Copiar</button>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-day">D+10+<span>sem retorno</span></div>
+        <div class="tl-content">
+          <h3>Encerra o ciclo</h3>
+          <p>Marca status como "Sem retorno" na planilha. Não insiste mais por DM — só reativa se eles postarem algo relevante ou após 30–60 dias.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>Central de Prospecção — Pedro Munaretto · @pedro_munaretto</footer>
+
+<script>
+  document.querySelectorAll('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const scriptEl = btn.previousElementSibling;
+      const text = scriptEl.innerText.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        const original = btn.textContent;
+        btn.textContent = '✓ Copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
